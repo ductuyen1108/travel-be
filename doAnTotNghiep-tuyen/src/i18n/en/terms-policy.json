@@ -1,0 +1,20 @@
+{
+  "common": {
+    "termsPolicyNotFound": "termsPolicy NotFound",
+    "termsPolicyVariantNotFound": "termsPolicy Variant NotFound",
+    "termsPolicyAttributeNotFound": "terms Policy Attribute NotFound",
+    "termsPolicyThumbnailNotFound": "terms Policy Thumbnail NotFound ",
+    "externalTermsPolicyNotFound": "external TermsPolicy NotFound ",
+    "deleteMultipleError": "delete Multiple Error"
+  },
+  "validationError": {
+    "id": "id validation Error",
+    "name": "name validation Error",
+    "lang": "lang validation Error",
+    "content": "content validation Error",
+    "type": "type validation Error",
+    "status": "status validation Error",
+    "termsPolicyDetails": "Invalid terms list field"
+  }
+  
+}

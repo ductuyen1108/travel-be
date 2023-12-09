@@ -1,0 +1,5 @@
+export enum ConstraintName {
+  CHECK_ONE_OF_KEY_OR_URL = 'CHECK_ONE_OF_KEY_OR_URL',
+  UQ_TIER_CONFIG = 'UQ_TIER_CONFIG',
+  UQ_CODE = 'UQ_CODE',
+}
