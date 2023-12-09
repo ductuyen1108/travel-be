@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PrefixType } from '../../../common/constants/global.constant';
 import {
-  AppCodeHeader,
   AuthenticateCustomer,
   CurrentAuthData,
 } from '../../../common/decorators/auth.decorator';
@@ -19,13 +18,11 @@ export class AuthCustomerController {
   constructor(private authCustomerService: AuthCustomerService) {}
 
   @Post('register')
-  @AppCodeHeader()
   register(@Body() body: RegisterCustomerReqDto) {
     return this.authCustomerService.register(body);
   }
 
   @Post('login')
-  @AppCodeHeader()
   login(@Body() body: LoginCustomerReqDto) {
     return this.authCustomerService.login(body);
   }

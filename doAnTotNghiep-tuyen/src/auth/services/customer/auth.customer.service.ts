@@ -61,7 +61,7 @@ export class AuthCustomerService {
 
   @Transactional()
   async register(dto: RegisterCustomerReqDto) {
-    const { phoneNumber, password, name, referralCode, otp } = dto;
+    const { phoneNumber, password, name } = dto;
 
     let customer = await this.customerRepo.findFirst({
       where: { phoneNumber },

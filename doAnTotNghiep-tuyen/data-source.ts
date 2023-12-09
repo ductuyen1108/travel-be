@@ -13,7 +13,7 @@ let config: DataSourceOptions & PostgresConnectionOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: ['dist/**/*.entity.js'],
-  synchronize: false,
+  synchronize: true,
   migrations: ['dist/migrations/*.js'],
   logger: 'simple-console',
   extra: {
@@ -43,7 +43,7 @@ switch (process.env.NODE_ENV) {
   case AppEnvironment.DEVELOPMENT:
     config = {
       ...config,
-      synchronize: false,
+      synchronize: true,
       migrationsRun: false,
       logging: false,
     };
@@ -52,7 +52,7 @@ switch (process.env.NODE_ENV) {
   case AppEnvironment.STAGE:
     config = {
       ...config,
-      synchronize: false,
+      synchronize: true,
       migrationsRun: false,
       logging: false,
     };
@@ -61,7 +61,7 @@ switch (process.env.NODE_ENV) {
   case AppEnvironment.PRODUCTION:
     config = {
       ...config,
-      synchronize: false,
+      synchronize: true,
       migrationsRun: false,
       logging: false,
     };
@@ -71,7 +71,7 @@ switch (process.env.NODE_ENV) {
   default:
     config = {
       ...config,
-      synchronize: false,
+      synchronize: true,
       migrationsRun: false,
       logging: boolean(process.env.SHOW_SQL),
     };

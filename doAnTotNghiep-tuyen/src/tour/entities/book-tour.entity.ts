@@ -3,7 +3,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
@@ -24,10 +23,13 @@ export class BookTour extends BaseEntity {
   @Column({ name: 'phone_number' })
   phoneNumber: string; // số điện thoại người đặt tour
 
+  @Column({ name: 'number_of_people' })
+  numberOfPeople: number; // số người đặt tour
+
   @Column({ name: 'tour_id' })
   tourId: number;
 
-  @OneToOne(() => Tour, (tour) => tour.bookTour, { persistence: false })
+  @ManyToOne(() => Tour, (tour) => tour.bookTours, { persistence: false })
   @JoinColumn({ name: 'tour_id' })
   tour: Tour;
 

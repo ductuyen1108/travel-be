@@ -32,17 +32,15 @@ export class Tour extends BaseEntity {
   imageId: number;
 
   @OneToOne(() => File, (file) => file.tour, { persistence: false })
+  @JoinColumn({ name: 'image_id' })
   image: File;
 
   @OneToMany(() => UserReview, (userReview) => userReview.tour)
   userReviews: UserReview[];
 
-  @OneToOne(() => BookTour, (bookTour) => bookTour.tour)
-  bookTour: BookTour;
+  @OneToMany(() => BookTour, (bookTour) => bookTour.tour)
+  bookTours: BookTour[];
   //   need total review count
-
-  @Column({ name: 'tour_detail_id', nullable: true })
-  tourDetailId: number;
 
   @OneToOne(() => TourDetail, (tourDetail) => tourDetail.tour)
   tourDetail: TourDetail;
