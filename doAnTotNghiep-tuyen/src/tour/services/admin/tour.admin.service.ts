@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { BadRequestExc } from 'src/common/exceptions/custom.exception';
+import { UserReviewResDto } from 'src/tour/dtos/common/user-review.res.dto';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
 import {
   CreateTourAdminReqDto,
   GetListTourAdminReqDto,
+  GetListUserReviewAdminReqDto,
   UpdateTourAdminReqDto,
 } from '../../dtos/admin/tour.admin.req.dto';
 import { TourResDto } from '../../dtos/common/tour.res.dto';
@@ -161,5 +164,42 @@ export class TourAdminService {
       this.userReviewRepo.softRemove(userReviews),
     ]);
     return;
+  }
+
+  async getDetailReview(tourId: number) {
+    const review = await this.userReviewRepo.findOne({
+      where: { tourId },
+      relations: { userReviewDetail: true },
+    });
+    if (!review) {
+      throw new BadRequestExc({ message: 'common.exceptions.notFound' });
+    }
+    return UserReviewResDto.forAdmin({
+      data: review,
+    });
+  }
+
+  async getListReview(dto: GetListUserReviewAdminReqDto) {
+    const { limit, page, tourId } = dto;
+    const qb = this.userReviewRepo
+      .createQueryBuilder('userReview')
+      .leftJoinAndSelect('userReview.tour', 'tour')
+      .leftJoinAndSelect('tour.image', 'image')
+      .leftJoinAndSelect('tour.tourDetail', 'tourDetail')
+      .leftJoinAndSelect('userReview.userReviewDetail', 'userReviewDetail')
+      .where('userReview.tourId = :tourId', { tourId: tourId })
+      .orderBy('userReview.createdAt', 'DESC');
+
+    const { items, meta } = await paginate(qb, { limit, page });
+
+    const reviews = await Promise.all(
+      items.map(async (item) => {
+        return UserReviewResDto.forAdmin({
+          data: item,
+        });
+      }),
+    );
+
+    return new Pagination(reviews, meta);
   }
 }

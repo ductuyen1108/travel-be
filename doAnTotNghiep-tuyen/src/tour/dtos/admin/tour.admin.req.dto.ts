@@ -82,3 +82,8 @@ export class GetListTourAdminReqDto extends PaginationReqDto {
   @IsValidText({ required: false })
   cityName?: string;
 }
+
+export class GetListUserReviewAdminReqDto extends PaginationReqDto {
+  @IsValidNumber()
+  tourId: number;
+}

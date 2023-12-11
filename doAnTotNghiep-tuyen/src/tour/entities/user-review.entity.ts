@@ -36,14 +36,10 @@ export class UserReview extends BaseEntity {
   @JoinColumn({ name: 'tour_id' })
   tour: Tour;
 
-  @Column({ name: 'user_review_detail_id' })
-  userReviewDetailId: number;
-
   @OneToOne(
     () => UserReviewDetail,
     (userReviewDetail) => userReviewDetail.userReview,
     { persistence: false },
   )
-  @JoinColumn({ name: 'user_review_detail_id' })
   userReviewDetail: UserReviewDetail;
 }

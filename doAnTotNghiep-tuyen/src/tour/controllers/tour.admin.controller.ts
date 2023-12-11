@@ -16,6 +16,7 @@ import { DeleteMultipleByIdNumberReqDto } from '../../common/dtos/delete-multipl
 import {
   CreateTourAdminReqDto,
   GetListTourAdminReqDto,
+  GetListUserReviewAdminReqDto,
   UpdateTourAdminReqDto,
 } from '../dtos/admin/tour.admin.req.dto';
 import { TourAdminService } from '../services/admin/tour.admin.service';
@@ -57,5 +58,15 @@ export class TourAdminController {
   @Delete()
   deleteMany(@Body() body: DeleteMultipleByIdNumberReqDto) {
     return this.tourAdminService.deleteMultiple(body);
+  }
+
+  @Get('user-review')
+  getListUserReview(@Query() query: GetListUserReviewAdminReqDto) {
+    return this.tourAdminService.getListReview(query);
+  }
+
+  @Get('user-review/:id')
+  getDetailUserReview(@Param('id', ParseIntPipe) id: number) {
+    return this.tourAdminService.getDetailReview(id);
   }
 }

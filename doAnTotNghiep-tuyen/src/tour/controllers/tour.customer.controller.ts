@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -19,7 +20,9 @@ import { DeleteMultipleByIdNumberReqDto } from '../../common/dtos/delete-multipl
 import { GetListTourAdminReqDto } from '../dtos/admin/tour.admin.req.dto';
 import {
   BookTourCustomerReqDto,
+  CreateUserReviewCustomerReqDto,
   GetListBookTourCustomerReqDto,
+  UpdateUserReviewCustomerReqDto,
 } from '../dtos/customer/tour.customer.rep.dto';
 import { TourAdminService } from '../services/admin/tour.admin.service';
 import { TourCustomerService } from '../services/customer/tour.customer.service';
@@ -75,5 +78,29 @@ export class TourCustomerController {
     @CurrentAuthData() user: User,
   ) {
     return this.tourCustomerService.getDetailTicket(id, user);
+  }
+
+  @Post('/user-review')
+  createUserReview(
+    @Body() dto: CreateUserReviewCustomerReqDto,
+    @CurrentAuthData() user: User,
+  ) {
+    return this.tourCustomerService.createReview(dto, user);
+  }
+
+  @Put('/user-review')
+  updateUserReview(
+    @Body() dto: UpdateUserReviewCustomerReqDto,
+    @CurrentAuthData() user: User,
+  ) {
+    return this.tourCustomerService.updateReview(dto, user);
+  }
+
+  @Delete('/user-review/tour/:id')
+  deleteUserReview(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentAuthData() user: User,
+  ) {
+    return this.tourCustomerService.deleteReview(id, user);
   }
 }

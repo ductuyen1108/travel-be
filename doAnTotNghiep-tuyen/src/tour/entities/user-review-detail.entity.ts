@@ -1,4 +1,10 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { UserReview } from './user-review.entity';
 
@@ -25,6 +31,10 @@ export class UserReviewDetail extends BaseEntity {
   @Column()
   overall: number;
 
+  @Column({ name: 'user_review_id' })
+  userReviewId: number;
+
   @OneToOne(() => UserReview, (userReview) => userReview.userReviewDetail)
+  @JoinColumn({ name: 'user_review_id' })
   userReview: UserReview;
 }

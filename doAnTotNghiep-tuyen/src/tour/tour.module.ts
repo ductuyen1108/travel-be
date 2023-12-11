@@ -3,6 +3,7 @@ import { CustomerRepository } from 'src/auth/repositories/customer.repository';
 import { TypeOrmCustomModule } from 'utility/dist';
 import { TourAdminController } from './controllers/tour.admin.controller';
 import { TourCustomerController } from './controllers/tour.customer.controller';
+import { NotiListenerService } from './listener/tour.listenr';
 import { BookTourRepository } from './repositories/book-tour.repository';
 import { TourDetailRepository } from './repositories/tour-detail.repository';
 import { TourRepository } from './repositories/tour.repository';
@@ -23,6 +24,7 @@ import { TourCustomerService } from './services/customer/tour.customer.service';
     BookTourRepository,
     TourCustomerService,
     CustomerRepository,
+    NotiListenerService,
   ],
 })
 export class TourModule {}

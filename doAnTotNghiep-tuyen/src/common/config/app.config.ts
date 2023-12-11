@@ -43,10 +43,7 @@ const appConfig = {
     apiKey: process.env.SEND_GRID_KEY,
     sender: process.env.SEND_GRID_SENDER_KEY,
     branchName: process.env.SEND_GRID_BRANCH_NAME,
-    templateId: {
-      verifyRegisterMerchant:
-        process.env.SEND_GRID_TEMPLATE_VERIFY_REGISTER_MERCHANT_ID,
-    },
+    templateId: process.env.SEND_GRID_TEMPLATE_ID,
   },
 };
 

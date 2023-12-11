@@ -1,20 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { User } from 'src/auth/entities/user.entity';
 import { CustomerRepository } from 'src/auth/repositories/customer.repository';
+import { AppConfig } from 'src/common/config/app.config';
 import { DeleteMultipleByIdNumberReqDto } from 'src/common/dtos/delete-multiple.dto';
+import { EventEmitterName } from 'src/common/enums/event.enum';
 import { BadRequestExc } from 'src/common/exceptions/custom.exception';
 import { BookTourResDto } from 'src/tour/dtos/common/book-tour.res.dto';
 import {
   BookTourCustomerReqDto,
+  CreateUserReviewCustomerReqDto,
   GetListBookTourCustomerReqDto,
+  UpdateUserReviewCustomerReqDto,
 } from 'src/tour/dtos/customer/tour.customer.rep.dto';
 import { BookTourRepository } from 'src/tour/repositories/book-tour.repository';
 import { TourDetailRepository } from 'src/tour/repositories/tour-detail.repository';
 import { TourRepository } from 'src/tour/repositories/tour.repository';
 import { UserReviewDetailRepository } from 'src/tour/repositories/user-review-detail.repository';
 import { UserReviewRepository } from 'src/tour/repositories/user-review.repository';
+import { SendGridTemplateParams } from 'src/utils/services/send-grid.service';
 import { In } from 'typeorm';
+import { Transactional, runOnTransactionCommit } from 'typeorm-transactional';
 
 @Injectable()
 export class TourCustomerService {
@@ -25,8 +33,11 @@ export class TourCustomerService {
     private userReviewDetailRepo: UserReviewDetailRepository,
     private bookTourRepo: BookTourRepository,
     private customerRepo: CustomerRepository,
+    private configService: ConfigService<AppConfig>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
+  @Transactional()
   async buyTicket(dto: BookTourCustomerReqDto, user: User) {
     const { tourId, numberOfPeople } = dto;
 
@@ -60,9 +71,30 @@ export class TourCustomerService {
     });
     await this.bookTourRepo.save(bookTour);
 
+    runOnTransactionCommit(() => {
+      const dynamicTemplateData = {
+        // currentTime: currentTime,
+        // fileName: fileRequest.name,
+      };
+
+      const templateId = this.configService.get('sendgrid.templateId');
+      const apiKey = this.configService.get('sendgrid.apiKey');
+      const sender = this.configService.get('sendgrid.sender');
+
+      const data: SendGridTemplateParams = {
+        to: [`${customer.email}`],
+        templateId: templateId,
+        dynamicTemplateData: dynamicTemplateData,
+        apiKey: apiKey,
+        sender: sender,
+      };
+
+      this.eventEmitter.emit(EventEmitterName.SEND_GRID_EMAIL, data);
+    });
     return { message: 'Đặt tour thành công' };
   }
 
+  @Transactional()
   async cancelTicket(id: number, user: User) {
     const bookTour = await this.bookTourRepo.findOneOrThrowNotFoundExc({
       where: { id, userId: user.id },
@@ -71,6 +103,7 @@ export class TourCustomerService {
     return { message: 'Hủy tour thành công' };
   }
 
+  @Transactional()
   async cancelTicketMultiply(dto: DeleteMultipleByIdNumberReqDto, user: User) {
     const { ids } = dto;
     const bookTours = await this.bookTourRepo.find({
@@ -121,5 +154,74 @@ export class TourCustomerService {
     return BookTourResDto.forCustomer({
       data: bookTour,
     });
+  }
+
+  @Transactional()
+  async createReview(dto: CreateUserReviewCustomerReqDto, user: User) {
+    const { tourId, reviewContent, userReviewDetail } = dto;
+    const tour = await this.tourRepo.findOneOrThrowNotFoundExc({
+      where: { id: tourId },
+    });
+    const existedReview = await this.userReviewRepo.findOne({
+      where: { userId: user.id, tourId },
+    });
+    if (existedReview) {
+      throw new BadRequestExc({ message: 'common.exceptions.existedReview' });
+    }
+
+    const newRevirew = this.userReviewRepo.create({
+      tourId,
+      userId: user.id,
+      reviewContent,
+      tourReviewName: tour.title,
+    });
+
+    await this.userReviewRepo.save(newRevirew);
+
+    const newUserReviewDetail = this.userReviewDetailRepo.create({
+      ...userReviewDetail,
+      userReviewId: newRevirew.id,
+    });
+    await this.userReviewDetailRepo.save(newUserReviewDetail);
+    newRevirew.userReviewDetail = newUserReviewDetail;
+    await this.userReviewRepo.save(newRevirew);
+    return { message: 'Đánh giá thành công' };
+  }
+
+  @Transactional()
+  async updateReview(dto: UpdateUserReviewCustomerReqDto, user: User) {
+    const { tourId, reviewContent, userReviewDetail } = dto;
+    const tour = await this.tourRepo.findOneOrThrowNotFoundExc({
+      where: { id: tourId },
+    });
+    const existedReview = await this.userReviewRepo.findOne({
+      where: { userId: user.id, tourId },
+    });
+    if (!existedReview) {
+      throw new BadRequestExc({ message: 'common.exceptions.notFound' });
+    }
+
+    await this.userReviewRepo.update(
+      { id: existedReview.id },
+      { reviewContent },
+    );
+
+    await this.userReviewDetailRepo.update(
+      { userReviewId: existedReview.id },
+      userReviewDetail,
+    );
+    return { message: 'Cập nhật đánh giá thành công' };
+  }
+
+  @Transactional()
+  async deleteReview(tourId: number, user: User) {
+    const existedReview = await this.userReviewRepo.findOne({
+      where: { userId: user.id, tourId },
+    });
+    if (!existedReview) {
+      throw new BadRequestExc({ message: 'common.exceptions.notFound' });
+    }
+    await this.userReviewRepo.softDelete(existedReview);
+    return { message: 'Xóa đánh giá thành công' };
   }
 }
