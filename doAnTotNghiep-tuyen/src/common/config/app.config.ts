@@ -45,6 +45,16 @@ const appConfig = {
     branchName: process.env.SEND_GRID_BRANCH_NAME,
     templateId: process.env.SEND_GRID_TEMPLATE_ID,
   },
+
+  momo: {
+    partnerCode: process.env.MOMO_PARTNER_CODE,
+    accessKey: process.env.MOMO_ACCESS_KEY,
+    secretKey: process.env.MOMO_SECRET_KEY,
+    ipnUrl: process.env.MOMO_IPN_URL,
+    api:process.env.MOMO_API,
+    redirectUrl: process.env.MOMO_REDIRECT_URL,
+    expireTime: process.env.MOMO_EXPIRE_TIME,
+  }
 };
 
 export default appConfig;
