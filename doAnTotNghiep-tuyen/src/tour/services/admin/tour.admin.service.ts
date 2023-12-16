@@ -92,7 +92,13 @@ export class TourAdminService {
   async getDetail(id: number) {
     const tour = await this.tourRepo.findOneOrThrowNotFoundExc({
       where: { id },
-      relations: { tourDetail: true, userReviews: true },
+      relations: {
+        tourDetail: true,
+        userReviews: true,
+        bookTours: true,
+        image: true,
+        city: true,
+      },
     });
     return TourResDto.forAdmin({ data: tour });
   }
@@ -124,7 +130,7 @@ export class TourAdminService {
     const tours = await Promise.all(
       items.map(async (item) => {
         const existedTourDetail = await this.tourDetailRepo.findOne({
-          where: { id: item.id },
+          where: { tourId: item.id },
         });
 
         const existUserReviews = await this.userReviewRepo.find({

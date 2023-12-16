@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -24,7 +25,7 @@ export class Tour extends BaseEntity {
   @Column({ name: 'city_id' })
   cityId: number;
 
-  @OneToOne(() => City, (city) => city.tour)
+  @ManyToOne(() => City, (city) => city.tours)
   @JoinColumn({ name: 'city_id' })
   city: City;
 

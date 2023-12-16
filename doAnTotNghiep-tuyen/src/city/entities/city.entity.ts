@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -24,6 +25,6 @@ export class City extends BaseEntity {
   @JoinColumn({ name: 'image_id' })
   image: File;
 
-  @OneToOne(() => Tour, (tour) => tour.city)
-  tour: Tour;
+  @OneToMany(() => Tour, (tour) => tour.city)
+  tours: Tour[];
 }
