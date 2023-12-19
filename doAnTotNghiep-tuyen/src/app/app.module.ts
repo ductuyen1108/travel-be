@@ -13,6 +13,7 @@ import {
 } from 'nestjs-i18n';
 import * as path from 'path';
 import { PaymentModule } from 'src/payment';
+import { PostModule } from 'src/post/post.module';
 import {
   addTransactionalDataSource,
   initializeTransactionalContext,
@@ -77,6 +78,7 @@ import { AppService } from './services/app.service';
     CityModule,
     TourModule,
     PaymentModule,
+    PostModule,
   ],
 
   controllers: [AppController],

@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/common/entities/base.entity';
+import { Post } from 'src/post/post.entity';
 import {
   Column,
   Entity,
@@ -45,4 +46,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => BookTour, (bookTour) => bookTour.user)
   bookTours: BookTour;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }

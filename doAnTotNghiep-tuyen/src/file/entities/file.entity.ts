@@ -1,3 +1,4 @@
+import { Post } from 'src/post/post.entity';
 import {
   Column,
   Entity,
@@ -62,4 +63,7 @@ export class File extends BaseEntityWithoutUpdate {
 
   @OneToOne(() => Tour, (tour) => tour.image, { persistence: false })
   tour: Tour;
+
+  @OneToOne(() => Post, (post) => post.image, { persistence: false })
+  post: Post;
 }
