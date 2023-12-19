@@ -12,6 +12,7 @@ import { UtilsModule } from '../utils/utils.module';
 import { AuthAdminController } from './controllers/admin/auth.admin.controller';
 import { ProfileAdminController } from './controllers/admin/profile.admin.controller';
 import { AuthCustomerController } from './controllers/customer/auth.customer.controller';
+import { ProfileCustomerController } from './controllers/customer/profile.customer.controller';
 import { AdminRepository } from './repositories/admin.repository';
 import { CustomerRepository } from './repositories/customer.repository';
 import { UserRepository } from './repositories/user.repository';
@@ -51,6 +52,7 @@ import { AuthenExternalStrategy } from './strategies/jwt-authen.external.strateg
     ProfileAdminController,
     AuthCustomerController,
     ProfileAdminController,
+    ProfileCustomerController,
   ],
   providers: [
     JwtAuthenAdminStrategy,
