@@ -3,16 +3,10 @@ import { ELanguage, EPayType, ERequestType } from '../constants/momo.constant';
 export interface IItem {
   id: string;
   name: string;
-  imageUrl?: string;
-  description?: string;
-  category?: string;
   currency: string;
   quantity: number;
   totalAmount: number;
   purchaseAmount: number;
-  manufacturer?: string;
-  unit?: string;
-  taxAmount?: number;
 }
 
 export interface IDeliveryInfo {

@@ -35,24 +35,6 @@ export class ItemDto {
   @IsString()
   name!: string;
 
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && value.trim())
-  @IsOptional()
-  @IsString()
-  imageUrl?: string;
-
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && value.trim())
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && value.trim())
-  @IsOptional()
-  @IsString()
-  category?: string;
-
   @ApiProperty()
   @Transform(({ value }) => value && value.trim())
   @IsNotEmpty()
@@ -76,24 +58,6 @@ export class ItemDto {
   @IsNotEmpty()
   @IsPositive()
   purchaseAmount!: number;
-
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && value.trim())
-  @IsOptional()
-  @IsString()
-  manufacturer?: string;
-
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && value.trim())
-  @IsOptional()
-  @IsString()
-  unit?: string;
-
-  @ApiPropertyOptional()
-  @Transform(({ value }) => value && +value)
-  @IsOptional()
-  @IsPositive()
-  taxAmount?: number;
 }
 
 export class DeliveryInfoDto {
