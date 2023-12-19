@@ -1,4 +1,4 @@
-import { PUBLIC_URL } from '../../../../common/config/file.config';
+import { PUBLIC_URL } from 'src/common/config/file.config';
 import { BaseResponseDtoParams } from '../../../../common/dtos/base.res';
 import { File } from '../../../entities/file.entity';
 

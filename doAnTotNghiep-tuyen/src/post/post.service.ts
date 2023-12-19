@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { paginate } from 'nestjs-typeorm-paginate';
+import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { User } from 'src/auth/entities/user.entity';
 import { DeleteMultipleByIdNumberReqDto } from 'src/common/dtos/delete-multiple.dto';
 import { FileRepository } from 'src/file/repositories/file.repository';
@@ -90,7 +90,14 @@ export class PostCustomerService {
 
     const { items, meta } = await paginate(qb, { limit, page });
 
-    const posts = items.map((item) => PostResDto.forCustomer({ data: item }));
+    const posts = items.map((item) =>
+      PostResDto.forCustomer({
+        data: item,
+        // image: FileResDto.forCustomer({ data: item.image }),
+      }),
+    );
+
+    return new Pagination(posts, meta);
   }
 
   async getDetail(id: number) {
