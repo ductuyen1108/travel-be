@@ -109,6 +109,7 @@ export class TourAdminService {
     const qb = this.tourRepo
       .createQueryBuilder('tour')
       .leftJoinAndSelect('tour.city', 'city')
+      .leftJoinAndSelect('city.image', 'image2')
       .leftJoinAndSelect('tour.image', 'image')
       .leftJoinAndSelect('tour.tourDetail', 'tourDetail')
       .leftJoinAndSelect('tour.userReviews', 'userReviews')
