@@ -94,7 +94,7 @@ export class TourAdminService {
       where: { id },
       relations: {
         tourDetail: true,
-        userReviews: true,
+        userReviews: { userReviewDetail: true },
         bookTours: true,
         image: true,
         city: true,
@@ -111,7 +111,8 @@ export class TourAdminService {
       .leftJoinAndSelect('tour.city', 'city')
       .leftJoinAndSelect('tour.image', 'image')
       .leftJoinAndSelect('tour.tourDetail', 'tourDetail')
-      .leftJoinAndSelect('tour.userReviews', 'userReviews');
+      .leftJoinAndSelect('tour.userReviews', 'userReviews')
+      .leftJoinAndSelect('userReviews.userReviewDetail', 'userReviewDetail');
 
     if (cityName) {
       qb.andWhere('city.cityName ILIKE :cityName', {
@@ -135,6 +136,7 @@ export class TourAdminService {
 
         const existUserReviews = await this.userReviewRepo.find({
           where: { tourId: item.id },
+          relations: { userReviewDetail: true },
         });
         item.tourDetail = existedTourDetail;
         item.userReviews = existUserReviews;
