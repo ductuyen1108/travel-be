@@ -117,7 +117,7 @@ export class TourAdminService {
       .leftJoinAndSelect('tour.tourDetail', 'tourDetail')
       .leftJoinAndSelect('tour.userReviews', 'userReviews')
       .leftJoinAndSelect('userReviews.userReviewDetail', 'userReviewDetail')
-      .leftJoinAndSelect('userReviewDetail.user', 'user')
+      .leftJoinAndSelect('userReviews.user', 'user')
       .leftJoinAndSelect('user.customer', 'customer')
       .leftJoinAndSelect('customer.avatar', 'avatar')
       .leftJoinAndSelect('user.admin', 'admin')
@@ -149,6 +149,8 @@ export class TourAdminService {
         });
         item.tourDetail = existedTourDetail;
         item.userReviews = existUserReviews;
+
+        // caculate rating average with each options
 
         return TourResDto.forAdmin({
           data: item,
