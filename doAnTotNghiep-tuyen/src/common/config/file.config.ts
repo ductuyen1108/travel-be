@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
 const StorageConfig = {
   projectId: process.env.PROJECT_ID,
   privateKey: process.env.PRIVATE_KEY.replace(/\\n/gm, '\n'),

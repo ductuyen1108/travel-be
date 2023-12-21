@@ -35,8 +35,8 @@ export class PostCustomerController {
   }
 
   @Post()
-  async createPost(@Body() dto: CreatePostDto) {
-    return this.postCustomerService.create(dto);
+  async createPost(@Body() dto: CreatePostDto, @CurrentAuthData() user: User) {
+    return this.postCustomerService.create(dto, user);
   }
 
   @Put(':id')

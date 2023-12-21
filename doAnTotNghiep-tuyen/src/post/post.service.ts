@@ -14,7 +14,7 @@ export class PostCustomerService {
     private fileRepo: FileRepository,
   ) {}
 
-  async create(dto: CreatePostDto) {
+  async create(dto: CreatePostDto, user: User) {
     const { title, content, imageId, description } = dto;
     if (imageId) {
       await this.fileRepo.findOneOrThrowNotFoundExc({ where: { id: imageId } });
@@ -24,15 +24,19 @@ export class PostCustomerService {
         content,
         description,
         imageId,
+        userId: user.id,
       });
 
       const savedPost = await this.postRepo.save(post);
+
+      return this.getDetail(savedPost.id);
     }
 
     const post = this.postRepo.create({
       title,
       content,
       description,
+      userId: user.id,
     });
 
     const savedPost = await this.postRepo.save(post);
@@ -58,7 +62,7 @@ export class PostCustomerService {
 
     const savedPost = await this.postRepo.save(post);
 
-    return PostResDto.forCustomer({ data: savedPost });
+    return this.getDetail(savedPost.id);
   }
 
   async deleteMany(dto: DeleteMultipleByIdNumberReqDto) {
@@ -96,7 +100,6 @@ export class PostCustomerService {
     const posts = items.map((item) =>
       PostResDto.forCustomer({
         data: item,
-        // image: FileResDto.forCustomer({ data: item.image }),
       }),
     );
 
@@ -108,7 +111,7 @@ export class PostCustomerService {
       where: { id },
       relations: { image: true, user: { customer: { avatar: true } } },
     });
-
+    console.log(post);
     return PostResDto.forCustomer({ data: post });
   }
 }
