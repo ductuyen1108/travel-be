@@ -6,6 +6,7 @@ import { TourDetailResDto } from './tour-detail.res.dto';
 import { UserReviewResDto } from './user-review.res.dto';
 export interface TourResDtoParams extends BaseResponseDtoParams {
   data: Tour;
+  averageRating?: any;
 }
 export class TourResDto {
   id: number;
@@ -14,13 +15,14 @@ export class TourResDto {
   image: FileResDto;
   tourDetail: TourDetailResDto;
   userReviews: UserReviewResDto[];
+  averageRating: any;
   static mapProperty(dto: TourResDto, { data }: TourResDtoParams) {
     dto.id = data.id;
     dto.title = data.title;
   }
 
   static forCustomer(params: TourResDtoParams) {
-    const { data } = params;
+    const { data, averageRating } = params;
 
     if (!data) return null;
     const result = new TourResDto();
@@ -32,11 +34,12 @@ export class TourResDto {
     result.userReviews = data.userReviews?.map((userReview) =>
       UserReviewResDto.forCustomer({ data: userReview }),
     );
+    result.averageRating = averageRating;
     return result;
   }
 
   static forAdmin(params: TourResDtoParams) {
-    const { data } = params;
+    const { data, averageRating } = params;
 
     const result = new TourResDto();
     if (!data) return null;
@@ -47,8 +50,9 @@ export class TourResDto {
     result.city = CityResDto.forAdmin({ data: data.city });
     result.tourDetail = TourDetailResDto.forAdmin({ data: data.tourDetail });
     result.userReviews = data.userReviews?.map((userReview) =>
-      UserReviewResDto.forAdmin({ data: userReview }),
+      UserReviewResDto.forCustomer({ data: userReview }),
     );
+    result.averageRating = averageRating;
     return result;
   }
 }

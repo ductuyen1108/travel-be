@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { BadRequestExc } from 'src/common/exceptions/custom.exception';
 import { UserReviewResDto } from 'src/tour/dtos/common/user-review.res.dto';
+import { UserReview } from 'src/tour/entities/user-review.entity';
 import { In } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 import { DeleteMultipleByIdNumberReqDto } from '../../../common/dtos/delete-multiple.dto';
@@ -103,11 +104,16 @@ export class TourAdminService {
         city: true,
       },
     });
-    return TourResDto.forAdmin({ data: tour });
+    console.log(tour.userReviews);
+    const averageRating: any = await this.caculateRatingAverage(
+      tour.userReviews,
+    );
+    return TourResDto.forAdmin({ data: tour, averageRating });
   }
 
   async getList(dto: GetListTourAdminReqDto) {
-    const { cityName, limit, page, title } = dto;
+    const { cityName, limit, page, title, startPrice, endPrice, startDate } =
+      dto;
 
     const qb = this.tourRepo
       .createQueryBuilder('tour')
@@ -135,25 +141,35 @@ export class TourAdminService {
       });
     }
 
-    const { items, meta } = await paginate(qb, { limit, page });
+    if (startPrice) {
+      qb.andWhere('tourDetail.price >= :startPrice', {
+        startPrice,
+      });
+    }
 
+    if (endPrice) {
+      qb.andWhere('tourDetail.price <= :endPrice', {
+        endPrice,
+      });
+    }
+
+    if (startDate) {
+      qb.andWhere('tourDetail.startDate >= :startDate', {
+        startDate,
+      });
+    }
+
+    const { items, meta } = await paginate(qb, { limit, page });
+    console.log(items[0].userReviews);
     const tours = await Promise.all(
       items.map(async (item) => {
-        const existedTourDetail = await this.tourDetailRepo.findOne({
-          where: { tourId: item.id },
-        });
-
-        const existUserReviews = await this.userReviewRepo.find({
-          where: { tourId: item.id },
-          relations: { userReviewDetail: true },
-        });
-        item.tourDetail = existedTourDetail;
-        item.userReviews = existUserReviews;
-
-        // caculate rating average with each options
+        const averageRating: any = await this.caculateRatingAverage(
+          item.userReviews,
+        );
 
         return TourResDto.forAdmin({
           data: item,
+          averageRating,
         });
       }),
     );
@@ -220,5 +236,83 @@ export class TourAdminService {
     );
 
     return new Pagination(reviews, meta);
+  }
+
+  async caculateRatingAverage(reviews: UserReview[]) {
+    // const reviews = await this.userReviewRepo.find({
+    //   where: { tourId },
+    //   relations: { userReviewDetail: true },
+    // });
+    if (!reviews.length) {
+      return 0;
+    }
+    // "UserReviewDetail": {
+    //   "id": 0,
+    //   "accommodation": 0,
+    //   "destination": 0,
+    //   "meals": 0,
+    //   "transport": 0,
+    //   "valueForMoney": 0,
+    //   "overall": 0
+    // }
+    const userReviewDetailArr = reviews.map(
+      (review) => review.userReviewDetail,
+    );
+    const accommodationArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.accommodation,
+    );
+    const destinationArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.destination,
+    );
+
+    const mealsArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.meals,
+    );
+
+    const transportArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.transport,
+    );
+
+    const valueForMoneyArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.valueForMoney,
+    );
+
+    const overallArr = userReviewDetailArr.map(
+      (userReviewDetail) => userReviewDetail.overall,
+    );
+
+    const accommodationAvg =
+      accommodationArr.reduce((a, b) => a + b, 0) / accommodationArr.length;
+
+    const destinationAvg =
+      destinationArr.reduce((a, b) => a + b, 0) / destinationArr.length;
+
+    const mealsAvg = mealsArr.reduce((a, b) => a + b, 0) / mealsArr.length;
+
+    const transportAvg =
+      transportArr.reduce((a, b) => a + b, 0) / transportArr.length;
+
+    const valueForMoneyAvg =
+      valueForMoneyArr.reduce((a, b) => a + b, 0) / valueForMoneyArr.length;
+
+    const overallAvg =
+      overallArr.reduce((a, b) => a + b, 0) / overallArr.length;
+
+    return {
+      accommodation: accommodationAvg,
+      destination: destinationAvg,
+      meals: mealsAvg,
+      transport: transportAvg,
+      valueForMoney: valueForMoneyAvg,
+      overall: overallAvg,
+      totalAvg:
+        (accommodationAvg +
+          destinationAvg +
+          mealsAvg +
+          transportAvg +
+          valueForMoneyAvg +
+          overallAvg) /
+        6,
+    };
   }
 }

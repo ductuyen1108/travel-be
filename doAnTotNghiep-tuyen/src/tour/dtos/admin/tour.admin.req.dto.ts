@@ -81,6 +81,15 @@ export class GetListTourAdminReqDto extends PaginationReqDto {
 
   @IsValidText({ required: false })
   cityName?: string;
+
+  @IsValidNumber()
+  startPrice?: number;
+
+  @IsValidNumber()
+  endPrice?: number;
+
+  @IsValidDate()
+  startDate?: Date;
 }
 
 export class GetListUserReviewAdminReqDto extends PaginationReqDto {

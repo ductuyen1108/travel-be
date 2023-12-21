@@ -2,6 +2,7 @@ import { ResOptionDto } from '../../../../common/dtos/base.res';
 import { User } from '../../../entities/user.entity';
 import { UserType } from '../../../enums/user.enum';
 import { AdminResDto } from './admin.res.dto';
+import { CustomerResDto } from './customer.res.dto';
 //import { CustomerResDto } from './customer.res.dto';
 
 export type UserResDtoParams = {
@@ -12,7 +13,7 @@ export type UserResDtoParams = {
 export class UserResDto {
   id: number;
   type: UserType;
-  // customer: CustomerResDto;
+  customer: CustomerResDto;
   admin: AdminResDto;
 
   static mapProperty(dto: UserResDto, params: UserResDtoParams) {
@@ -29,9 +30,24 @@ export class UserResDto {
 
     this.mapProperty(result, params);
 
-    // result.type = data.type;
+    result.type = data.type;
 
-    //result.admin = AdminResDto.forAdmin({ data: data.admin });
+    result.admin = AdminResDto.forAdmin({ data: data.admin });
+
+    return result;
+  }
+
+  static forCustomer(params: UserResDtoParams) {
+    const { data, resOpts } = params;
+
+    const result = new UserResDto();
+    if (!data) return null;
+
+    this.mapProperty(result, params);
+
+    result.type = data.type;
+
+    result.customer = CustomerResDto.forCustomer({ data: data.customer });
 
     return result;
   }

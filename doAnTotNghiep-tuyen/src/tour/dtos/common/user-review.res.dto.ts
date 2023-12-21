@@ -1,3 +1,4 @@
+import { UserResDto } from 'src/auth/dtos/common/res/user.res.dto';
 import { BaseResponseDtoParams } from '../../../common/dtos/base.res';
 import { UserReview } from '../../entities/user-review.entity';
 import { UserReviewDetailResDto } from './user-review-detail.res.dto';
@@ -9,7 +10,7 @@ export class UserReviewResDto {
   tourReviewName: string; // title của tour
   reviewContent: string; // đoạn đánh giá của user
   UserReviewDetail: UserReviewDetailResDto;
-
+  user: UserResDto;
   static mapProperty(dto: UserReviewResDto, { data }: UserReviewResDtoParams) {
     dto.id = data.id;
     dto.tourReviewName = data.tourReviewName;
@@ -26,6 +27,7 @@ export class UserReviewResDto {
     result.UserReviewDetail = UserReviewDetailResDto.forCustomer({
       data: data.userReviewDetail,
     });
+    result.user = UserResDto.forCustomer({ data: data.user });
     return result;
   }
 
@@ -40,6 +42,7 @@ export class UserReviewResDto {
     result.UserReviewDetail = UserReviewDetailResDto.forAdmin({
       data: data.userReviewDetail,
     });
+    result.user = UserResDto.forAdmin({ data: data.user });
     return result;
   }
 }

@@ -28,15 +28,9 @@ export class CustomerResDto {
   status: CustomerStatus;
   user: UserResDto;
   avatar: FileResDto;
-  lackRankPoint: number;
-  lastVisitDate: Date;
-  lastScanDate: Date;
   gender: CustomerGender;
   createdAt: Date;
-  blockAccount: boolean;
-  blockAddPoint: boolean;
   userId: number;
-  tierPoint: number;
 
   static mapProperty({
     dto,
@@ -52,10 +46,7 @@ export class CustomerResDto {
     dto.birthDate = data.birthDate;
     dto.createdAt = data.createdAt;
     dto.gender = data.gender;
-    dto.blockAccount = blockAccount;
-    dto.blockAddPoint = blockAddPoint;
     dto.userId = data.userId;
-    dto.tierPoint = tierPoint ? tierPoint : 0;
     dto.address = data.address;
   }
 
