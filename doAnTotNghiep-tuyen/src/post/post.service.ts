@@ -76,6 +76,9 @@ export class PostCustomerService {
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.image', 'image')
       .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('user.customer', 'customer')
+      .leftJoinAndSelect('customer.avatar', 'avatar')
+
       .where('post.userId = :userId', { userId: userId ? userId : user.id });
 
     if (content) {
@@ -103,7 +106,7 @@ export class PostCustomerService {
   async getDetail(id: number) {
     const post = await this.postRepo.findOneOrThrowNotFoundExc({
       where: { id },
-      relations: { image: true },
+      relations: { image: true, user: { customer: { avatar: true } } },
     });
 
     return PostResDto.forCustomer({ data: post });
