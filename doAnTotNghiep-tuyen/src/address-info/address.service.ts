@@ -109,8 +109,8 @@ export class AddressService {
 
       const fullAddress = [
         customer.address,
-        ward[0].pathWithType as string,
-        district[0].pathWithType as string,
+        ward[0].nameWithType as string,
+        district[0].nameWithType as string,
         province.nameWithType as string,
       ]
         .filter(Boolean)
