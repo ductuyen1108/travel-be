@@ -4,6 +4,7 @@ import { forwardRef } from '@nestjs/common/utils';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AddressService } from 'src/address-info/address.service';
 import { TypeOrmCustomModule } from 'utility/dist';
 import { AppConfig } from '../common/config/app.config';
 import { FileModule } from '../file/file.module';
@@ -65,6 +66,7 @@ import { AuthenExternalStrategy } from './strategies/jwt-authen.external.strateg
     UserCommonService,
     CustomerRepository,
     JwtAuthenCustomerStrategy,
+    AddressService,
   ],
 })
 export class AuthModule {}

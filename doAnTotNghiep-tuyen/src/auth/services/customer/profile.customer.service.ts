@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AddressService } from 'src/address-info/address.service';
 import { Transactional } from 'typeorm-transactional';
 import {
   ExpectationFailedExc,
@@ -23,6 +24,7 @@ export class ProfileCustomerService {
     private fileRepo: FileRepository,
     private userRepo: UserRepository,
     private encryptService: EncryptService,
+    private addressService: AddressService,
   ) {}
 
   async getProfile(user: User) {
@@ -34,8 +36,11 @@ export class ProfileCustomerService {
       },
     });
 
+    const fullAddress = await this.addressService.getAddress(customer);
+    console.log(fullAddress);
     return CustomerResDto.forCustomer({
       data: customer,
+      fullAddress: fullAddress,
     });
   }
 

@@ -15,6 +15,7 @@ export interface CustomerResDtoParams extends BaseResponseDtoParams {
   blockAddPoint?: boolean;
   lackRankPoint?: number;
   tierPoint?: number;
+  fullAddress?: string;
 }
 
 export class CustomerResDto {
@@ -38,6 +39,7 @@ export class CustomerResDto {
     blockAccount,
     blockAddPoint,
     tierPoint,
+    fullAddress,
   }: CustomerResDtoParams) {
     dto.id = data.id;
     dto.phoneNumber = data.phoneNumber;
@@ -47,44 +49,8 @@ export class CustomerResDto {
     dto.createdAt = data.createdAt;
     dto.gender = data.gender;
     dto.userId = data.userId;
+    dto.fullAddress = fullAddress;
     dto.address = data.address;
-  }
-
-  static forCustomer({ data, tierPoint, resOpts }: CustomerResDtoParams) {
-    if (!data) return null;
-
-    const result = new CustomerResDto();
-
-    this.mapProperty({
-      dto: result,
-      data: data,
-      tierPoint,
-    });
-
-    result.avatar = FileResDto.forCustomer({ data: data.avatar, resOpts });
-    return result;
-  }
-
-  static forMerchant({
-    data,
-    blockAccount,
-    blockAddPoint,
-    resOpts,
-  }: CustomerResDtoParams) {
-    if (!data) return null;
-
-    const result = new CustomerResDto();
-
-    this.mapProperty({
-      dto: result,
-      data: data,
-      blockAccount: blockAccount,
-      blockAddPoint: blockAddPoint,
-    });
-
-    result.status = data.status;
-
-    return result;
   }
 
   static forAdmin(params: CustomerResDtoParams) {
@@ -99,6 +65,25 @@ export class CustomerResDto {
 
     result.avatar = FileResDto.forAdmin({ data: data.avatar, resOpts });
     result.user = UserResDto.forAdmin({ data: data.user, resOpts });
+    return result;
+  }
+
+  static forCustomer(params: CustomerResDtoParams) {
+    const { data, resOpts } = params;
+
+    const result = new CustomerResDto();
+    if (!data) return null;
+
+    this.mapProperty({
+      dto: result,
+      data: data,
+      fullAddress: params.fullAddress,
+    });
+
+    result.status = data.status;
+
+    result.avatar = FileResDto.forCustomer({ data: data.avatar, resOpts });
+    result.user = UserResDto.forCustomer({ data: data.user, resOpts });
     return result;
   }
 }

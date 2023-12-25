@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs';
+import { Customer } from 'src/auth/entities/customer.entity';
 
 @Injectable()
 export class AddressService {
@@ -80,5 +81,46 @@ export class AddressService {
     });
 
     return dataArray;
+  }
+
+  async getAddress(customer: Customer): Promise<string> {
+    try {
+      const provinceData = this.getProvinceData();
+      const districtData = this.getDistricData();
+      const wardData = this.getWardData();
+      console.log('customer', customer);
+      const province: any = Object.values(provinceData).find(
+        (item) => item.code === `${customer.provinceId}`,
+      );
+      console.log('province', province);
+      // Assuming districtData is an object with keys
+      console.log(typeof customer.provinceId);
+      const district: any = Object.values(districtData).filter(
+        (item: any) => item.code === `${customer.districtId}`,
+      );
+      // Assuming wardData is an object with keys
+      const ward: any = Object.values(wardData).filter(
+        (item: any) => item.code === `${customer.wardId}`,
+      );
+      console.log('ward', ward);
+      if (!province || !district || !ward) {
+        throw new Error('Invalid province, district, or ward ID');
+      }
+
+      const fullAddress = [
+        customer.address,
+        ward[0].pathWithType as string,
+        district[0].pathWithType as string,
+        province.nameWithType as string,
+      ]
+        .filter(Boolean)
+        .join(', ');
+      return fullAddress;
+    } catch (error) {
+      // Handle errors (log, throw, or return a default value)
+      console.error(`Error in getAddress: ${error.message}`);
+      // throw error; // Uncomment this line if you want to propagate the error
+      return 'Error in getAddress'; // Return a default value
+    }
   }
 }
