@@ -22,7 +22,6 @@ export class CustomerResDto {
   id: number;
   phoneNumber: string;
   address: string;
-  fullAddress: string;
   email: string;
   name: string;
   birthDate: Date;
@@ -49,8 +48,7 @@ export class CustomerResDto {
     dto.createdAt = data.createdAt;
     dto.gender = data.gender;
     dto.userId = data.userId;
-    dto.fullAddress = fullAddress;
-    dto.address = data.address;
+    dto.address = fullAddress;
   }
 
   static forAdmin(params: CustomerResDtoParams) {
