@@ -85,10 +85,10 @@ export class GetListTourAdminReqDto extends PaginationReqDto {
   @IsValidNumber()
   startPrice?: number;
 
-  @IsValidNumber()
+  @IsValidNumber({ required: false })
   endPrice?: number;
 
-  @IsValidDate()
+  @IsValidDate({ required: false })
   startDate?: Date;
 }
 

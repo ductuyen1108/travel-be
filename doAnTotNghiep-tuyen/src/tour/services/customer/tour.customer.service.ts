@@ -122,8 +122,17 @@ export class TourCustomerService {
     const qb = this.bookTourRepo
       .createQueryBuilder('bookTour')
       .leftJoinAndSelect('bookTour.tour', 'tour')
+      .leftJoinAndSelect('tour.city', 'city')
+      .leftJoinAndSelect('city.image', 'image2')
       .leftJoinAndSelect('tour.image', 'image')
       .leftJoinAndSelect('tour.tourDetail', 'tourDetail')
+      .leftJoinAndSelect('tour.userReviews', 'userReviews')
+      .leftJoinAndSelect('userReviews.userReviewDetail', 'userReviewDetail')
+      .leftJoinAndSelect('userReviews.user', 'user')
+      .leftJoinAndSelect('user.customer', 'customer')
+      .leftJoinAndSelect('customer.avatar', 'avatar')
+      .leftJoinAndSelect('user.admin', 'admin')
+      .leftJoinAndSelect('admin.avatar', 'avatar2')
       .where('bookTour.userId = :userId', { userId: user.id })
       .orderBy('bookTour.createdAt', 'DESC');
 
@@ -145,9 +154,13 @@ export class TourCustomerService {
       relations: {
         tour: {
           tourDetail: true,
-          userReviews: true,
-          city: { image: true },
+          userReviews: {
+            userReviewDetail: true,
+            user: { customer: { avatar: true }, admin: { avatar: true } },
+          },
+          bookTours: true,
           image: true,
+          city: true,
         },
       },
     });
