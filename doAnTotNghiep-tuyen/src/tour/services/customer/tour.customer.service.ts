@@ -93,7 +93,7 @@ export class TourCustomerService {
 
       this.eventEmitter.emit(EventEmitterName.SEND_GRID_EMAIL, data);
     });
-    return bookTour;
+    return this.getDetailTicket(bookTour.id, user);
   }
 
   @Transactional()

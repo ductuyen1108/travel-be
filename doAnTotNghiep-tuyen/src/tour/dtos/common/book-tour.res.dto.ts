@@ -10,12 +10,13 @@ export class BookTourResDto {
   email: string;
   phoneNumber: string;
   tour: TourResDto;
-
+  status: string;
   static mapProperty(dto: BookTourResDto, { data }: BookTourResDtoParams) {
     dto.id = data.id;
     dto.name = data.name;
     dto.email = data.email;
     dto.phoneNumber = data.phoneNumber;
+    dto.status = data.status;
   }
 
   static forCustomer(params: BookTourResDtoParams) {
