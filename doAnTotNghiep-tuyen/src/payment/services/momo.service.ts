@@ -5,6 +5,8 @@ import { AxiosRequestConfig } from 'axios';
 import * as crypto from 'crypto';
 import { AppConfig } from 'src/common/config/app.config';
 import { BadRequestExc } from 'src/common/exceptions/custom.exception';
+import { TourStatus } from 'src/tour/enums/tour.enum';
+import { BookTourRepository } from 'src/tour/repositories/book-tour.repository';
 import * as uuid from 'uuid';
 import {
   CheckPaymentStatusDto,
@@ -26,6 +28,7 @@ export class MomoService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService<AppConfig>,
+    private bookTourRepo: BookTourRepository,
   ) {}
 
   public async createPayment(
@@ -34,9 +37,6 @@ export class MomoService {
     const body: ICreatePaymentRequest = {
       ...data,
       partnerCode: this.configService.get('momo.partnerCode'),
-      // subPartnerCode: this.configService.MOMO_SUB_PARTNER_CODE,
-      // partnerName: this.configService.MOMO_PARTNER_NAME,
-      // storeId: this.configService.MOMO_STORE_ID,
       requestId: uuid.v4(),
       redirectUrl: this.configService.get('momo.redirectUrl'),
       ipnUrl: this.configService.get('momo.ipnUrl'),
@@ -112,28 +112,14 @@ export class MomoService {
         message: 'Invalid signature',
       });
     }
-    // const invoice = await this.invoiceRepository.findOneBy({
-    //   id: parseInt(data.orderId.replace(`INVOICE_${this.configService.SR.PRODUCT_NAME}_`, ''), 10),
-    //   status: EInvoiceStatus.UNPAID,
-    // });
-    // if (invoice && invoice.payment['requestId'] === data.requestId) {
-    //   if (data.resultCode === 0) {
-    //     invoice.status = EInvoiceStatus.PAID;
-    //     invoice.paymentAt = new Date(data.responseTime);
-    //   } else {
-    //     invoice.status = EInvoiceStatus.PAILED;
-    //     const variant = invoice.invoiceItems.map((item) => ({
-    //       ...item.variant,
-    //       quantity: item.variant.quantity + item.quantity,
-    //     }));
-    //     await this.variantRepository.save(variant);
-    //   }
-    //   const job = await this.queueInvoice.getJob(data.orderId);
-    //   if (job) {
-    //     await job.remove();
-    //   }
-    //   await this.invoiceRepository.save(invoice);
-    // }
+    const bookTourId = parseInt(data.orderId.replace(`travel_`, ''), 10);
+    const invoice = await this.bookTourRepo.findOneByOrThrowNotFoundExc({
+      id: bookTourId,
+      status: TourStatus.UNPAID,
+    });
+
+    invoice.status = TourStatus.PAID;
+    await this.bookTourRepo.save(invoice);
   }
 
   private async fetcher<T>(config: AxiosRequestConfig): Promise<T> {

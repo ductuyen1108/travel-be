@@ -51,10 +51,10 @@ const appConfig = {
     accessKey: process.env.MOMO_ACCESS_KEY,
     secretKey: process.env.MOMO_SECRET_KEY,
     ipnUrl: process.env.MOMO_IPN_URL,
-    api:process.env.MOMO_API,
+    api: process.env.MOMO_API,
     redirectUrl: process.env.MOMO_REDIRECT_URL,
     expireTime: process.env.MOMO_EXPIRE_TIME,
-  }
+  },
 };
 
 export default appConfig;

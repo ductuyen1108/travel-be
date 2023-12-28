@@ -6,10 +6,10 @@ export interface BookTourResDtoParams extends BaseResponseDtoParams {
 }
 export class BookTourResDto {
   id: number;
-    name: string;
-    email: string;
-    phoneNumber: string;
-    tour : TourResDto
+  name: string;
+  email: string;
+  phoneNumber: string;
+  tour: TourResDto;
 
   static mapProperty(dto: BookTourResDto, { data }: BookTourResDtoParams) {
     dto.id = data.id;
@@ -26,8 +26,8 @@ export class BookTourResDto {
 
     this.mapProperty(result, params);
     result.tour = TourResDto.forCustomer({
-        data: data.tour,
-        });
+      data: data.tour,
+    });
     return result;
   }
 
@@ -40,8 +40,8 @@ export class BookTourResDto {
     this.mapProperty(result, params);
 
     result.tour = TourResDto.forAdmin({
-        data: data.tour,
-        });
+      data: data.tour,
+    });
     return result;
   }
 }

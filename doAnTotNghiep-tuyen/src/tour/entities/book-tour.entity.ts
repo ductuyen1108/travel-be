@@ -36,6 +36,9 @@ export class BookTour extends BaseEntity {
   @Column({ name: 'user_id' })
   userId: number;
 
+  @Column()
+  status: string;
+
   @ManyToOne(() => User, (user) => user.bookTours, { persistence: false })
   @JoinColumn({ name: 'user_id' })
   user: User;

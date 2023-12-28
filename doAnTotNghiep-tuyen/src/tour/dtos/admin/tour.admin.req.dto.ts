@@ -82,7 +82,7 @@ export class GetListTourAdminReqDto extends PaginationReqDto {
   @IsValidText({ required: false })
   cityName?: string;
 
-  @IsValidNumber()
+  @IsValidNumber({ required: false })
   startPrice?: number;
 
   @IsValidNumber({ required: false })

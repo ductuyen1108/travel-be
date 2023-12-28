@@ -15,6 +15,7 @@ import {
   GetListBookTourCustomerReqDto,
   UpdateUserReviewCustomerReqDto,
 } from 'src/tour/dtos/customer/tour.customer.rep.dto';
+import { TourStatus } from 'src/tour/enums/tour.enum';
 import { BookTourRepository } from 'src/tour/repositories/book-tour.repository';
 import { TourDetailRepository } from 'src/tour/repositories/tour-detail.repository';
 import { TourRepository } from 'src/tour/repositories/tour.repository';
@@ -68,6 +69,7 @@ export class TourCustomerService {
       phoneNumber: customer.phoneNumber,
       userId: user.id,
       numberOfPeople,
+      status: TourStatus.UNPAID,
     });
     await this.bookTourRepo.save(bookTour);
 
@@ -91,7 +93,7 @@ export class TourCustomerService {
 
       this.eventEmitter.emit(EventEmitterName.SEND_GRID_EMAIL, data);
     });
-    return { message: 'Đặt tour thành công' };
+    return bookTour;
   }
 
   @Transactional()

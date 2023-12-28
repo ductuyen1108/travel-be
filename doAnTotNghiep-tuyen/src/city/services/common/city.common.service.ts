@@ -71,6 +71,9 @@ export class CityCommonService {
   async getDetail(id: number) {
     const city = await this.cityRepo.findOneOrThrowNotFoundExc({
       where: { id },
+      relations: {
+        image: true,
+      },
     });
     return CityResDto.forCommon({ data: city });
   }
