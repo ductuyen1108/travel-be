@@ -31,7 +31,7 @@ export class CustomerResDto {
   gender: CustomerGender;
   createdAt: Date;
   userId: number;
-
+  fullAddress: string;
   static mapProperty({
     dto,
     data,
@@ -48,6 +48,7 @@ export class CustomerResDto {
     dto.createdAt = data.createdAt;
     dto.gender = data.gender;
     dto.userId = data.userId;
+    dto.address = data.address;
     dto.address = fullAddress;
   }
 
